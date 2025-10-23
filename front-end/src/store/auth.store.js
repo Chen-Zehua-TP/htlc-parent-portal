@@ -8,12 +8,14 @@ export const useAuthStore = create((set)=>({
 
     checkAuth:async()=>{
         try {
-            const response =await axiosInstance.get('/auth/check');
-            console.log(response.data + 'this is the response') 
-            set({authUser:response.data})
+            console.log('[LOG] checkAuth called - checking authentication status');
+            // const response =await axiosInstance.get('/auth/check');
+            // console.log(response.data + 'this is the response') 
+            // set({authUser:response.data})
+            console.log('[LOG] checkAuth: No backend available, auth check skipped');
         } catch (error) {
             set({authUser:null})
-            console.log(error)
+            console.log('[LOG] checkAuth error:', error)
             
         }
         finally{
@@ -24,13 +26,21 @@ export const useAuthStore = create((set)=>({
     login:async(formdata)=>{
       set({isLoggingIn:true})
       try {
-        const response = await axiosInstance.post('/auth/login',formdata)
-        set({authUser:response.data})
-        if(response){toast.success('Logged in successfully')}
+        console.log('[LOG] login called with formData:', formdata);
+        // const response = await axiosInstance.post('/auth/login',formdata)
+        // Mock response - accept any credentials
+        const mockResponse = {
+          studentId: formdata.studentid,
+          studentName: 'John Doe',
+          studentLevel: 'Year 10'
+        };
+        console.log('[LOG] login: Mock response:', mockResponse);
+        set({authUser:mockResponse})
+        toast.success('Logged in successfully')
         
       } catch (error) {
-        console.log(error)
-        toast.error(error.response.data.message)
+        console.log('[LOG] login error:', error)
+        toast.error(error.response?.data?.message || 'Login failed')
         set({authUser:null})
       }finally{
         set({isLoggingIn:false})
@@ -40,11 +50,13 @@ export const useAuthStore = create((set)=>({
 
     logout:async()=>{
       try {
-       await axiosInstance.post('/auth/logout')
+       console.log('[LOG] logout called');
+       // await axiosInstance.post('/auth/logout')
         toast.success('successs')
         set({authUser:null})
+        console.log('[LOG] logout: No backend available, logout completed locally');
       } catch (error) {
-        console.log('error in logging out', error)
+        console.log('[LOG] error in logging out', error)
         toast.error(error)
       }
     }
