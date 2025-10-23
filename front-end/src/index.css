@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* Background setup */
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url('./assets/banner.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  height: 100vh;
+  overflow: hidden;
+}
