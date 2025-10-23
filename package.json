@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npm install --prefix front-end && npm run build --prefix front-end",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "build": "npm install --prefix front-end && npm run build --prefix front-end"
   },
   "keywords": [],
   "author": "",
