@@ -7,12 +7,16 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
+  "homepage": "https://chen-zehua-tp.github.io/htlc-parent-portal.github.io/",
   "dependencies": {
     "@tailwindcss/vite": "^4.0.17",
     "axios": "^1.8.4",
     "front-end": "file:",
+    "gh-pages": "^6.3.0",
     "lucide-react": "^0.484.0",
     "parent-portal-v2": "file:..",
     "react": "^19.0.0",
