@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import {Navigate, Route,Routes} from "react-router-dom"
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import Attendance from "./pages/Attendance";
 import { useAuthStore } from "./store/auth.store.js";
 import { useEffect } from "react";
 import {Loader} from 'lucide-react'
@@ -31,6 +32,7 @@ const App = ()=>{
       <Routes>
         <Route path="/" element={authUser?<Home/>: <Navigate to="/login"/>}/>
         <Route path="/login" element={!authUser?<Login/>: <Navigate to="/"/>}/>
+        <Route path="/attendance" element={authUser?<Attendance/>: <Navigate to="/login"/>}/>
       </Routes>
 
       <Toaster/>

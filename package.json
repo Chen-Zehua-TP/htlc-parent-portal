@@ -7,7 +7,7 @@
     "build": "npm install --prefix front-end && npm run build --prefix front-end",
     "deploy": "npm run deploy --prefix front-end",
     "gas-push": "cd back-end && clasp push",
-    "gas-deploy": "cd back-end && node deploy.js"
+    "gas-deploy": "cd back-end && clasp push && node deploy.js"
   },
   "keywords": [
     "parent-portal",

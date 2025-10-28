@@ -46,7 +46,7 @@ export const useAuthStore = create((set) => ({
         set({ isLoading: true })
         try {
           console.log('[LOG] initializeAuth: Validating stored token');
-          const response = await axiosInstance.post('', { token })
+          const response = await axiosInstance.post('', { token }, { params: { route: 'login' } })
           
           if (response.data.status === "Success" && response.data.data) {
             const userData = mapStudentData(response.data.data)
@@ -79,7 +79,7 @@ export const useAuthStore = create((set) => ({
       set({ isLoading: true, error: null })
       try {
         console.log('[LOG] login called with formData:', formdata);
-        const response = await axiosInstance.post('', formdata)
+        const response = await axiosInstance.post('', formdata, { params: { route: 'login' } })
         
         console.log('[LOG] login response:', response.data);
         

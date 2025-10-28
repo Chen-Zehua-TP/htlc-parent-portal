@@ -1,11 +1,3 @@
-function doGet(e) {
-  // This endpoint should not be called from the frontend
-  return ContentService.createTextOutput(JSON.stringify({
-    status: "Error",
-    message: "Please use POST method"
-  })).setMimeType(ContentService.MimeType.JSON);
-}
-
 const attendanceSheetID = '1UnWhJktyP0AMtgeoOx4p3IzSIdZrqi_ywPDxj_qXHqA';
 const attendanceSheet = SpreadsheetApp.openById(attendanceSheetID);
 
@@ -115,4 +107,68 @@ function getStudentAttendance(studentID = "R0379") {
 
 function getAttendanceData(studentID) {  
   return { records: JSON.stringify(getStudentAttendance(studentID)) };
+}
+
+// Handle POST requests for attendance queries
+// Uses validateToken() and sendJsonResponse() from utils.js
+function handleAttendance(e) {
+  try {
+    // Check if this is an attendance request via query parameter
+    const route = e.parameter.route;
+    
+    if (route !== 'attendance') {
+      // If no attendance route specified, reject
+      return sendJsonResponse(JSON.stringify({
+        status: "Error",
+        message: "Invalid route"
+      }));
+    }
+
+    // Parse the request body
+    const params = JSON.parse(e.postData.contents);
+    const { token, studentid } = params;
+
+    // Validate token
+    if (!token) {
+      return sendJsonResponse(JSON.stringify({
+        status: "Error",
+        message: "Token is required"
+      }));
+    }
+
+    const payload = validateToken(token);
+    if (!payload) {
+      return sendJsonResponse(JSON.stringify({
+        status: "Error",
+        message: "Invalid or expired token"
+      }));
+    }
+
+    // Use studentid from request, or fall back to token's studentId
+    const targetStudentId = studentid || payload.studentId;
+
+    // Cache and store to ensure data is current
+    cacheAndStore();
+
+    // Get attendance data
+    const attendanceRecords = getStudentAttendance(targetStudentId);
+
+    if (!attendanceRecords) {
+      return sendJsonResponse(JSON.stringify({
+        status: "Error",
+        message: "No attendance records found for student: " + targetStudentId
+      }));
+    }
+
+    return sendJsonResponse(JSON.stringify({
+      status: "Success",
+      data: attendanceRecords
+    }));
+
+  } catch (error) {
+    return sendJsonResponse(JSON.stringify({
+      status: "Error",
+      message: "Server error: " + error.toString()
+    }));
+  }
 }

@@ -1,10 +1,12 @@
 import React from 'react';
 import { useAuthStore } from '../store/auth.store.js';
+import { useNavigate } from 'react-router-dom';
 import logo from '../assets/HappyTutorsLogo.png'; // ✅ Proper image import
 import { LogOut, User } from 'lucide-react';
 
 export default function Navbar() {
-  const { authUser,logout } = useAuthStore(); // get auth user from your store
+  const { authUser, logout } = useAuthStore(); // get auth user from your store
+  const navigate = useNavigate();
 
   return (
     <nav className="bg-white shadow-md px-6 py-4 flex items-center justify-between">
@@ -18,10 +20,16 @@ export default function Navbar() {
   <div className="flex items-center gap-6 text-sm text-gray-700">
     {/* Navigation links */}
     <nav className="flex gap-4 items-center">
-      <p className="font-medium hover:text-yellow-500 hover:underline transition cursor-pointer">
+      <p 
+        className="font-medium hover:text-yellow-500 hover:underline transition cursor-pointer"
+        onClick={() => navigate('/')}
+      >
         My Classes
       </p>
-      <p className="font-medium hover:text-yellow-500 hover:underline transition cursor-pointer">
+      <p 
+        className="font-medium hover:text-yellow-500 hover:underline transition cursor-pointer"
+        onClick={() => navigate('/attendance')}
+      >
         Attendance
       </p>
       <p className="font-medium hover:text-yellow-500 hover:underline transition cursor-pointer">
