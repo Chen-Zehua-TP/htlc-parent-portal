@@ -1,20 +1,22 @@
 import axios from 'axios'
 
-// API calls go to frontend dev server at /api, which proxies to GAS backend
-// In production, you'll need to set up a backend server or update this URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || "/api"
+// Direct query to Google Apps Script backend (no proxy)
+const API_BASE_URL = import.meta.env.VITE_GAS_BACKEND_URL
 
 export const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
-    withCredentials: false
+    withCredentials: false,
+    headers: {
+      // Use text/plain to bypass CORS preflight for Google Apps Script
+      // GAS doesn't handle application/json preflight requests well
+      'Content-Type': 'text/plain;charset=utf-8'
+    }
 })
 
-// Add token to every request
+// Add token to every request (via request body, not headers, to avoid CORS preflight)
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem('authToken')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
+  // Don't add Authorization header as it triggers CORS preflight
+  // Token is sent in the request body instead for Google Apps Script
   return config
 })
 

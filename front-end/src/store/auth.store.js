@@ -91,9 +91,6 @@ export const useAuthStore = create((set) => ({
             // Store token in localStorage
             localStorage.setItem('authToken', token)
             
-            // Set axios header for future requests
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`
-            
             set({ 
               authUser: userData, 
               token: token,
@@ -124,7 +121,6 @@ export const useAuthStore = create((set) => ({
       try {
         console.log('[LOG] logout called');
         localStorage.removeItem('authToken')
-        axiosInstance.defaults.headers.common['Authorization'] = ''
         set({ authUser: null, token: null, error: null })
         toast.success('Logged out successfully')
       } catch (error) {
