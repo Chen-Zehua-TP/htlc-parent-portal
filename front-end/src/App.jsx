@@ -9,14 +9,16 @@ import {Loader} from 'lucide-react'
 
 import { Toaster } from "react-hot-toast"
 const App = ()=>{
-  const {authUser,isCheckingAuth,checkAuth} = useAuthStore()
+  const {authUser, isLoading, initializeAuth} = useAuthStore()
 
   useEffect(()=>{
-    checkAuth()
-  },[checkAuth])
-  console.log(authUser)
+    // Initialize auth from stored token on app load
+    initializeAuth()
+  }, [])
 
-  if(!authUser && isCheckingAuth){
+  console.log('[LOG] authUser:', authUser)
+
+  if(!authUser && isLoading){
     return (
      <div className="flex justify-center items-center h-screen">
       <Loader className="animate-spin size-10"/>
@@ -27,8 +29,8 @@ const App = ()=>{
   <div>
       <Navbar/>
       <Routes>
-        <Route path="/" element={authUser?<Home/>: <Navigate to="/Login"/>}/>
-        <Route path="/Login" element={!authUser?<Login/>: <Navigate to="/"/>}/>
+        <Route path="/" element={authUser?<Home/>: <Navigate to="/login"/>}/>
+        <Route path="/login" element={!authUser?<Login/>: <Navigate to="/"/>}/>
       </Routes>
 
       <Toaster/>

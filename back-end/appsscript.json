@@ -1,0 +1,26 @@
+{
+  "timeZone": "Asia/Singapore",
+  "dependencies": {
+    "libraries": [
+      {
+        "userSymbol": "Library",
+        "version": "0",
+        "libraryId": "1JUfJ0VNdxkftYuMv-1S_wOcvhoEXeC-DPVy2McusBoigLzZDvPN3dcLq",
+        "developmentMode": true
+      }
+    ],
+    "enabledAdvancedServices": [
+      {
+        "userSymbol": "Sheets",
+        "version": "v4",
+        "serviceId": "sheets"
+      }
+    ]
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8",
+  "webapp": {
+    "executeAs": "USER_DEPLOYING",
+    "access": "ANYONE_ANONYMOUS"
+  }
+}

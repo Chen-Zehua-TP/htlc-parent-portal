@@ -1,16 +1,19 @@
 {
-  "name": "parent-portal-v2",
+  "name": "htlc-parent-portal",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Happy Tutors Parent Portal - React Frontend + Google Apps Script Backend",
   "scripts": {
-    "build": "npm install --prefix front-end && npm run build --prefix front-end"
+    "dev": "npm run dev --prefix front-end",
+    "build": "npm install --prefix front-end && npm run build --prefix front-end",
+    "deploy": "npm run deploy --prefix front-end",
+    "gas-push": "cd back-end && clasp push",
+    "gas-deploy": "cd back-end && node deploy.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "description": "",
-  "dependencies": {
-    "parent-portal-v2": "file:"
-  }
+  "keywords": [
+    "parent-portal",
+    "react",
+    "google-apps-script"
+  ],
+  "author": "Chen-Zehua-TP",
+  "license": "ISC"
 }
