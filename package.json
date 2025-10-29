@@ -6,8 +6,9 @@
     "dev": "npm run dev --prefix front-end",
     "gas-dev": "cd back-end && clasp push",
     "build": "npm install --prefix front-end && npm run build --prefix front-end",
-    "gh-pages-deploy": "npm run deploy --prefix front-end",
-    "gas-deploy": "cd back-end && clasp push && node deploy.js"
+    "testing": "npm run deploy --prefix front-end",
+    "gas-pdeploy": "cd back-end && clasp push && node deploy.js",
+    "pdeploy": "npm run pdeploy --prefix front-end"
   },
   "keywords": [
     "parent-portal",
