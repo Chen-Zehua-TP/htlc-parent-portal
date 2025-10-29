@@ -60,13 +60,13 @@ function cacheAndStore() {
   Logger.log("Student map cached and stored successfully.");
 }
 
-// cache > json store in drive > run function
-
 function getStudentAttendance(studentID = "R0379") {
   console.time("getRowsOptimized");
 
   const cache = CacheService.getScriptCache();
   const targetRowsJson = cache.get(studentID);
+
+  // TODO: If no cache, then run cacheAndStore()
   if (!targetRowsJson) {
     Logger.log("No cache found for student: " + studentID);
     return;
@@ -105,25 +105,10 @@ function getStudentAttendance(studentID = "R0379") {
   return values;
 }
 
-function getAttendanceData(studentID) {  
-  return { records: JSON.stringify(getStudentAttendance(studentID)) };
-}
-
 // Handle POST requests for attendance queries
 // Uses validateToken() and sendJsonResponse() from utils.js
 function handleAttendance(e) {
   try {
-    // Check if this is an attendance request via query parameter
-    const route = e.parameter.route;
-    
-    if (route !== 'attendance') {
-      // If no attendance route specified, reject
-      return sendJsonResponse(JSON.stringify({
-        status: "Error",
-        message: "Invalid route"
-      }));
-    }
-
     // Parse the request body
     const params = JSON.parse(e.postData.contents);
     const { token, studentid } = params;
@@ -146,9 +131,6 @@ function handleAttendance(e) {
 
     // Use studentid from request, or fall back to token's studentId
     const targetStudentId = studentid || payload.studentId;
-
-    // Cache and store to ensure data is current
-    cacheAndStore();
 
     // Get attendance data
     const attendanceRecords = getStudentAttendance(targetStudentId);

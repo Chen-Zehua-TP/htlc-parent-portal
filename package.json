@@ -4,9 +4,9 @@
   "description": "Happy Tutors Parent Portal - React Frontend + Google Apps Script Backend",
   "scripts": {
     "dev": "npm run dev --prefix front-end",
+    "gas-dev": "cd back-end && clasp push",
     "build": "npm install --prefix front-end && npm run build --prefix front-end",
-    "deploy": "npm run deploy --prefix front-end",
-    "gas-push": "cd back-end && clasp push",
+    "gh-pages-deploy": "npm run deploy --prefix front-end",
     "gas-deploy": "cd back-end && clasp push && node deploy.js"
   },
   "keywords": [

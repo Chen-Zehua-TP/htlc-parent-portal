@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAuthStore } from '../store/auth.store';
 import { useAttendanceStore } from '../store/attendance.store';
-import { Loader, AlertCircle, CheckCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function Attendance() {
   const { authUser, token } = useAuthStore();
@@ -15,18 +15,26 @@ export default function Attendance() {
 
     console.log('[LOG] Attendance: Fetching data for student', authUser.studentId);
     fetchAttendance(token, authUser.studentId);
-  }, [authUser, token, fetchAttendance]);
+  }, [authUser, token]);
 
-  // Show cached data immediately, even if loading new data
-  const hasData = attendanceData.length > 0;
+  // Sort attendance data by date in descending order (most recent first)
+  const sortedAttendanceData = [...attendanceData].sort((a, b) => {
+    // Try to find a date field (common naming conventions)
+    const dateKey = 'date';
+    
+    if (!dateKey) return 0;
 
-  if (isLoading && !hasData) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader className="animate-spin size-10" />
-      </div>
-    );
-  }
+        // Parse DD/MM/YYYY format to Date objects
+    const parseDate = (dateStr) => {
+      const [day, month, year] = dateStr.split('/');
+      return new Date(year, month - 1, day);
+    };
+    
+    const dateA = parseDate(a[dateKey]);
+    const dateB = parseDate(b[dateKey]);
+    
+    return dateB - dateA; // Descending order (most recent first)
+  });
 
   return (
     <div className="min-h-screen flex flex-col gap-8 px-4 py-10">
@@ -44,19 +52,13 @@ export default function Attendance() {
         </div>
       ) : attendanceData.length > 0 ? (
         <div className="w-full max-w-6xl mx-auto flex flex-col gap-4">
-          {isLoading && (
-            <div className="mb-4 flex items-center gap-2 text-sm text-blue-600">
-              <Loader className="animate-spin size-4" />
-              Refreshing attendance data...
-            </div>
-          )}
           <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col h-[70vh]">
             <div className="overflow-auto flex-1">
               <table className="w-full border-collapse">
                 <thead className="bg-blue-600 text-white sticky top-0 z-10">
                   <tr>
                     {/* Get headers from first record */}
-                    {Object.keys(attendanceData[0]).map((key) => (
+                    {Object.keys(sortedAttendanceData[0]).map((key) => (
                       <th key={key} className="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap border-b border-blue-700">
                         {key.charAt(0).toUpperCase() + key.slice(1)}
                       </th>
@@ -64,7 +66,7 @@ export default function Attendance() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {attendanceData.map((record, index) => (
+                  {sortedAttendanceData.map((record, index) => (
                     <tr key={index} className="hover:bg-gray-50 transition">
                       {Object.values(record).map((value, cellIndex) => (
                         <td key={cellIndex} className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
