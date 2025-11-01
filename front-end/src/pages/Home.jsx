@@ -49,9 +49,7 @@ export default function Home() {
               <div key={index} className="bg-white shadow-md rounded-lg p-6 border-l-4 border-blue-500">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">{course.name}</h3>
                 <div className="space-y-1 text-sm text-gray-600">
-                  <p><strong>Class ID:</strong> {course.classId || 'N/A'}</p>
                   <p><strong>Time:</strong> {course.time || 'N/A'}</p>
-                  <p><strong>Date:</strong> {course.date ? new Date(course.date).toLocaleDateString() : 'N/A'}</p>
                 </div>
               </div>
             ))}

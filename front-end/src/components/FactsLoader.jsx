@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Loader } from 'lucide-react';
 
 const FACTS = [
-  'Sign up for our intensive crash course.',
-  'Our teachers are highly qualified and experienced.',
-  'We teach students according to their learning styles.'
+  'Click the WhatsApp Button at the bottom right to contact us directly',
+  'Happy Tutors offer personalized tutoring for all levels — from primary and AEIS to secondary, O Levels, and JC'
 ];
 
 export default function FactsLoader() {

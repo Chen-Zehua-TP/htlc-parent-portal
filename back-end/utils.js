@@ -104,6 +104,8 @@ function doPost(e) {
         return handleLogin(e);
       case 'attendance':
         return handleAttendance(e);
+      case 'receipts':
+        return handleReceipts(e);
       default:
         return sendJsonResponse(JSON.stringify({
           status: "Error",

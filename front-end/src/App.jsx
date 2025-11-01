@@ -5,8 +5,10 @@ import {Navigate, Route,Routes} from "react-router-dom"
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Attendance from "./pages/Attendance";
+import Receipts from "./pages/Receipts";
 import { useAuthStore } from "./store/auth.store.js";
 import {useAttendanceStore} from "./store/attendance.store.js";
+import {useReceiptsStore} from "./store/receipts.store.js";
 import { useEffect } from "react";
 import Loader from './components/FactsLoader';
 
@@ -14,6 +16,7 @@ import { Toaster } from "react-hot-toast"
 const App = ()=>{
   const {authUser, isLoading: authLoading, initializeAuth} = useAuthStore()
   const { isLoading: attendanceLoading } = useAttendanceStore()
+  const { isLoading: receiptsLoading } = useReceiptsStore()
 
   useEffect(()=>{
     // Initialize auth from stored token on app load
@@ -22,7 +25,7 @@ const App = ()=>{
 
   console.log('[LOG] authUser:', authUser)
 
-  if((!authUser && authLoading) || attendanceLoading){
+  if((!authUser && authLoading) || attendanceLoading || receiptsLoading){
     return (
      <div className="flex justify-center items-center h-screen">
       <Loader className="animate-spin size-10"/>
@@ -36,6 +39,7 @@ const App = ()=>{
         <Route path="/" element={authUser?<Home/>: <Navigate to="/login"/>}/>
         <Route path="/login" element={!authUser?<Login/>: <Navigate to="/"/>}/>
         <Route path="/attendance" element={authUser?<Attendance/>: <Navigate to="/login"/>}/>
+        <Route path="/receipts" element={authUser?<Receipts/>: <Navigate to="/login"/>}/>
       </Routes>
 
       <WhatsAppButton/>

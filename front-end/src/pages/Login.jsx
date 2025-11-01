@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useAuthStore } from '../store/auth.store.js';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showBranchModal, setShowBranchModal] = useState(false);
   const [formData, setFormData] = useState({ studentid: '', pincode: '' });
   const { login, isLoggingIn } = useAuthStore();
+
+  const branches = [
+    { name: 'Jurong West', phone: '65206146' },
+    { name: 'Bukit Batok', phone: '65630672' },
+    { name: 'Bukit Gombak', phone: '66120314' },
+    { name: 'Tampines', phone: '88050232' },
+    { name: 'Bedok Reservoir', phone: '68027696' },
+    { name: 'Tiong Bahru', phone: '88010944' },
+  ];
 
   const validateForm = () => {
     if (!formData.studentid || !formData.pincode) {
@@ -24,6 +34,10 @@ const Login = () => {
     } catch {
       toast.error('Login failed');
     }
+  };
+
+  const handleForgotPasscode = () => {
+    setShowBranchModal(true);
   };
 
   return (
@@ -81,12 +95,66 @@ const Login = () => {
               )}
             </button>
 
-            <a href="#" className="text-sm text-gray-600 hover:underline">
+            <button
+              type="button"
+              onClick={handleForgotPasscode}
+              className="text-sm text-gray-600 hover:underline"
+            >
               Forgot Passcode?
-            </a>
+            </button>
           </div>
         </form>
       </div>
+
+      {/* Branch Selection Modal */}
+      {showBranchModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center px-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Select Your Branch
+              </h2>
+              <button
+                onClick={() => setShowBranchModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-600 mb-4">
+              Contact your branch to reset your passcode:
+            </p>
+
+            <ul className="space-y-3 mb-6">
+              {branches.map((branch) => (
+                <li key={branch.phone}>
+                  <a
+                    href={`https://wa.me/${branch.phone}?text=Hi%20i%20forgot%20my%20PIN%20for%20parent%20portal`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-3 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition"
+                  >
+                    <span className="font-medium text-gray-800">
+                      {branch.name}
+                    </span>
+                    <span className="text-green-600 font-semibold">
+                      WhatsApp →
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <button
+              onClick={() => setShowBranchModal(false)}
+              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-semibold transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

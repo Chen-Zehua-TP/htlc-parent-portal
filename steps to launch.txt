@@ -1,0 +1,6 @@
+1. Build
+2. Test
+ a. push to testing GitHub repo
+ b. use postman to test GAS
+3. Deploy
+ a. merge to main GitHub repo

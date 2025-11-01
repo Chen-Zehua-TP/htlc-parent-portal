@@ -17,6 +17,16 @@ export default function Attendance() {
     fetchAttendance(token, authUser.studentId);
   }, [authUser, token]);
 
+  // Helper function to format column headers
+  const formatColumnHeader = (key) => {
+    // Handle special cases
+    if (key === 'Studentid') return 'Student ID';
+    if (key === 'studentid') return 'Student ID';
+    
+    // Default: capitalize first letter
+    return key.charAt(0).toUpperCase() + key.slice(1);
+  };
+
   // Sort attendance data by date in descending order (most recent first)
   const sortedAttendanceData = [...attendanceData].sort((a, b) => {
     // Try to find a date field (common naming conventions)
@@ -60,7 +70,7 @@ export default function Attendance() {
                     {/* Get headers from first record */}
                     {Object.keys(sortedAttendanceData[0]).map((key) => (
                       <th key={key} className="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap border-b border-blue-700">
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                        {formatColumnHeader(key)}
                       </th>
                     ))}
                   </tr>

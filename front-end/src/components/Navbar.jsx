@@ -38,8 +38,11 @@ export default function Navbar() {
             >
               Attendance
             </p>
-            <p className="font-medium hover:text-yellow-500 hover:underline transition cursor-pointer">
-              Payments
+            <p 
+              className="font-medium hover:text-yellow-500 hover:underline transition cursor-pointer"
+              onClick={() => navigate('/receipts')}
+            >
+              Receipts
             </p>
           </nav>
 
@@ -97,8 +100,14 @@ export default function Navbar() {
             >
               Attendance
             </p>
-            <p className="font-medium text-gray-700 hover:text-yellow-500 transition cursor-pointer py-2">
-              Payments
+            <p 
+              className="font-medium text-gray-700 hover:text-yellow-500 transition cursor-pointer py-2"
+              onClick={() => {
+                navigate('/receipts');
+                setMobileMenuOpen(false);
+              }}
+            >
+              Receipts
             </p>
 
             {/* Divider */}

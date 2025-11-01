@@ -1,5 +1,5 @@
 // <CONSTANTS>
-const sheet = SpreadsheetApp.openById('1g-5UNu-MZ7AEe0tyreoArrkKsJpY0jmv8Yg6tix4yME')
+const sheet = SpreadsheetApp.getActiveSpreadsheet();
 const accessSheet = sheet.getSheetByName("Access")
 const dataSheet = sheet.getSheetByName('Data')
 // documentProperties is defined in utils.js

@@ -1,11 +1,291 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
-/* Background setup */
+/* Light Mode (Default) */
 body {
   margin: 0;
   padding: 0;
   background-color: whitesmoke;
   height: 100vh;
   overflow: auto;
+  color: #1f2937;
+}
+
+/* Dark Mode Forced by Google */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #0f172a;
+    color: #e5e7eb;
+  }
+
+  /* Navbar */
+  nav {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+  }
+
+  /* Text Colors */
+  p, span, div, a {
+    color: #e5e7eb;
+  }
+
+  /* Input Fields */
+  input,
+  textarea,
+  select,
+  .input {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+    color: #e5e7eb !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #94a3b8 !important;
+  }
+
+  /* Cards and Containers */
+  .card,
+  .bg-white {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+  }
+
+  /* Tables */
+  table,
+  thead,
+  tbody,
+  tr,
+  th,
+  td {
+    border-color: #334155 !important;
+  }
+
+  thead {
+    background-color: #0f172a !important;
+  }
+
+  tbody tr:hover {
+    background-color: #334155 !important;
+  }
+
+  /* Buttons */
+  button {
+    color: inherit;
+  }
+
+  .btn,
+  button[type="submit"],
+  button[type="button"] {
+    border-color: #475569 !important;
+  }
+
+  .btn-primary,
+  .bg-blue-600,
+  .bg-green-500 {
+    background-color: #3b82f6 !important;
+  }
+
+  .btn-primary:hover,
+  .bg-blue-600:hover,
+  .bg-green-500:hover {
+    background-color: #2563eb !important;
+  }
+
+  .bg-black {
+    background-color: #1e293b !important;
+  }
+
+  .bg-black:hover {
+    background-color: #334155 !important;
+  }
+
+  /* Forms */
+  .form-control label {
+    color: #e5e7eb !important;
+  }
+
+  .modal,
+  .modal-content,
+  .modal-box {
+    background-color: #1e293b !important;
+    color: #e5e7eb !important;
+  }
+
+  /* Status Messages */
+  .alert,
+  .alert-info,
+  .alert-warning,
+  .alert-error {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+  }
+
+  /* Error States */
+  .bg-red-50 {
+    background-color: #7f1d1d !important;
+  }
+
+  .text-red-800,
+  .text-red-700 {
+    color: #fca5a5 !important;
+  }
+
+  .border-red-500 {
+    border-color: #ef4444 !important;
+  }
+
+  /* Success States */
+  .bg-blue-50 {
+    background-color: #1e3a8a !important;
+  }
+
+  .text-blue-800,
+  .text-blue-700 {
+    color: #93c5fd !important;
+  }
+
+  .border-blue-500 {
+    border-color: #3b82f6 !important;
+  }
+
+  /* Loading Spinner */
+  .loading {
+    border-color: #475569 !important;
+    border-top-color: #3b82f6 !important;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0f172a;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
+
+  /* Icons */
+  svg {
+    color: inherit;
+  }
+
+  .text-gray-600,
+  .text-gray-700 {
+    color: #d1d5db !important;
+  }
+
+  .text-gray-800,
+  .text-gray-900 {
+    color: #f3f4f6 !important;
+  }
+
+  .text-gray-500 {
+    color: #9ca3af !important;
+  }
+
+  /* Hover Effects */
+  a:hover,
+  .hover\:text-yellow-500:hover {
+    color: #fbbf24 !important;
+  }
+
+  /* Border Colors */
+  .border-gray-200,
+  .border-gray-300 {
+    border-color: #334155 !important;
+  }
+
+  /* Link Colors */
+  a {
+    color: #60a5fa;
+  }
+
+  a:hover {
+    color: #93c5fd;
+  }
+
+  /* Box Shadows */
+  .shadow,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8) !important;
+  }
+
+  /* Gradients */
+  .bg-gradient-to-r {
+    background-image: linear-gradient(to right, #1e40af, #1e3a8a) !important;
+  }
+
+  /* Toast/Notifications */
+  .toast {
+    background-color: #1e293b !important;
+    color: #e5e7eb !important;
+  }
+
+  /* DaisyUI overrides */
+  .divider {
+    border-color: #334155 !important;
+    color: #94a3b8 !important;
+  }
+
+  /* Modal Overlay */
+  .fixed.inset-0.bg-black {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+  }
+
+  /* Modal Content */
+  .rounded-xl.shadow-2xl {
+    background-color: #1e293b !important;
+    color: #e5e7eb !important;
+  }
+
+  /* Green Button States (Branch links) */
+  .bg-green-50 {
+    background-color: #134e4a !important;
+    border-color: #0d9488 !important;
+  }
+
+  .bg-green-50:hover {
+    background-color: #0f766e !important;
+  }
+
+  .text-green-600 {
+    color: #86efac !important;
+  }
+
+  .border-green-200 {
+    border-color: #86efac !important;
+  }
+
+  /* Close button in modal */
+  .text-gray-400 {
+    color: #9ca3af !important;
+  }
+
+  .text-gray-400:hover {
+    color: #d1d5db !important;
+  }
+
+  /* Modal close/button backgrounds */
+  .bg-gray-200 {
+    background-color: #475569 !important;
+  }
+
+  .bg-gray-200:hover {
+    background-color: #64748b !important;
+  }
+
+  .text-gray-800 {
+    color: #f3f4f6 !important;
+  }
 }
