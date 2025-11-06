@@ -3,11 +3,6 @@ const sheet = SpreadsheetApp.getActiveSpreadsheet();
 const accessSheet = sheet.getSheetByName("Access")
 const dataSheet = sheet.getSheetByName('Data')
 // documentProperties is defined in utils.js
-
-function reimportStudentsInfo() {
-  mapStudentPins()
-  getStudentsData()
-}
 // Import
 function mapStudentPins() {
   const startingRow = 2

@@ -119,3 +119,9 @@ function doPost(e) {
     }));
   }
 }
+
+function initiateData() {
+  cacheAndStore()
+  mapStudentPins()
+  getStudentsData()
+}
