@@ -6,26 +6,32 @@ export const useReceiptsStore = create((set, get) => ({
   receiptsData: [],
   isLoading: false,
   error: null,
-  lastStudentId: null,
+  failedAttempts: 0,
 
   // Fetch receipts data for a student
-  fetchReceipts: async (token, studentId) => {
+  fetchReceipts: async (token) => {
     const state = get();
     
-    // If we have cached data for this student, show it immediately
-    if (state.receiptsData.length > 0 && state.lastStudentId === studentId) {
+    // If we have cached data, show it immediately
+    if (state.receiptsData.length > 0) {
       set({ isLoading: false })
-      console.log('[LOG] fetchReceipts: Showing cached data for student', studentId);
+      console.log('[LOG] fetchReceipts: Showing cached data');
+      return;
+    }
+
+    // If already failed twice, don't retry
+    if (state.failedAttempts >= 2) {
+      console.log('[LOG] fetchReceipts: Maximum failed attempts reached, stopping retries');
+      set({ isLoading: false })
       return;
     }
 
     set({ isLoading: true, error: null })
     try {
-      console.log('[LOG] fetchReceipts: Requesting data for student', studentId);
+      console.log('[LOG] fetchReceipts: Requesting data with verified token (Attempt ' + (state.failedAttempts + 1) + ')');
       
       const response = await axiosInstance.post('', {
-        token: token,
-        studentid: studentId
+        token: token
       }, {params: {route: 'receipts'}})
 
       console.log('[LOG] fetchReceipts response:', response.data);
@@ -33,28 +39,33 @@ export const useReceiptsStore = create((set, get) => ({
       if (response.data.status === 'Success' && response.data.data) {
         set({
           receiptsData: response.data.data,
-          lastStudentId: studentId,
-          error: null
+          error: null,
+          failedAttempts: 0
         })
         toast.success('Receipts data loaded successfully')
         console.log('[LOG] Receipts data fetched successfully');
       } else {
         const errorMsg = response.data.message || 'Failed to fetch receipts data'
+        const newAttempts = state.failedAttempts + 1
         set({
           receiptsData: [],
-          error: errorMsg
+          error: errorMsg,
+          failedAttempts: newAttempts
         })
         toast.error(errorMsg)
-        console.log('[LOG] fetchReceipts error:', errorMsg);
+        console.log('[LOG] fetchReceipts error:', errorMsg, '(Attempt ' + newAttempts + '/2)');
       }
     } catch (error) {
       console.error('[LOG] fetchReceipts error:', error)
       const errorMsg = error.response?.data?.message || error.message || 'Failed to load receipts data'
+      const newAttempts = state.failedAttempts + 1
       set({
         receiptsData: [],
-        error: errorMsg
+        error: errorMsg,
+        failedAttempts: newAttempts
       })
       toast.error(errorMsg)
+      console.log('[LOG] fetchReceipts error (Attempt ' + newAttempts + '/2):', errorMsg);
     } finally {
       set({ isLoading: false })
     }
@@ -64,9 +75,9 @@ export const useReceiptsStore = create((set, get) => ({
   clearReceipts: () => {
     set({
       receiptsData: [],
-      lastStudentId: null,
       error: null,
-      isLoading: false
+      isLoading: false,
+      failedAttempts: 0
     })
   },
 

@@ -13,8 +13,8 @@ export default function Receipts() {
       return;
     }
 
-    console.log('[LOG] Receipts: Fetching data for student', authUser.studentId);
-    fetchReceipts(token, authUser.studentId);
+    console.log('[LOG] Receipts: Fetching data with verified token');
+    fetchReceipts(token);
   }, [authUser, token]);
 
   // Helper function to format ISO date to "28th July 2024" format

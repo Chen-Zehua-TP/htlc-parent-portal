@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../store/auth.store.js';
+import { useAnnouncementStore } from '../store/announcement.store.js';
 import { useNavigate } from 'react-router-dom';
-import logo from '../assets/HappyTutorsLogo.png'; // ✅ Proper image import
-import { LogOut, User, Menu, X } from 'lucide-react';
+import logo from '../assets/htlc-full-logo.png'; // ✅ Proper image import
+import { LogOut, User, Menu, X, Bell } from 'lucide-react';
 
 export default function Navbar() {
   const { authUser, logout } = useAuthStore(); // get auth user from your store
+  const { announcements, openModal } = useAnnouncementStore();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -45,6 +47,21 @@ export default function Navbar() {
               Receipts
             </p>
           </nav>
+
+          {/* Announcement icon */}
+          {announcements.length > 0 && (
+            <div className="relative">
+              <Bell
+                size={22}
+                className="text-gray-600 cursor-pointer hover:text-yellow-500 transition"
+                onClick={openModal}
+                title="View announcements"
+              />
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {announcements.length}
+              </span>
+            </div>
+          )}
 
           {/* User ID */}
           <div className="flex items-center gap-2 pl-4 border-l border-gray-300">
@@ -112,6 +129,20 @@ export default function Navbar() {
 
             {/* Divider */}
             <div className="border-t border-gray-200 my-2"></div>
+
+            {/* Announcement button */}
+            {announcements.length > 0 && (
+              <button
+                className="flex items-center gap-2 text-yellow-600 hover:text-yellow-700 font-medium py-2 transition w-full"
+                onClick={() => {
+                  openModal();
+                  setMobileMenuOpen(false);
+                }}
+              >
+                <Bell size={18} />
+                Announcements ({announcements.length})
+              </button>
+            )}
 
             {/* User ID */}
             <div className="flex items-center gap-2 py-2 text-gray-700">

@@ -1,0 +1,11 @@
+- Dev
+1. Portal Subdomain (use CNAME on wordpress)
+2. When sheet updates, update the doc prop
+
+- Pre-Prod
+1. Change Script and Deployment Id
+2. Just make sure it works on GitHub.ios
+
+Patches:
+1. Uses student id from jwt , preventing security vulnerability
+2. Fallback (Done for receipt only)

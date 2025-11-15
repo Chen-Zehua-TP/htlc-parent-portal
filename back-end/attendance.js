@@ -34,7 +34,7 @@ function mapStudentId() {
   return [studentMap, headers.map(header => header.toLowerCase())];
 }
 
-function cacheAndStore() {
+function storeMapStudentId() {
   // Get the student map
   const [studentMap, headers] = mapStudentId();
   if (!studentMap) {
@@ -42,52 +42,82 @@ function cacheAndStore() {
     return;
   }
 
-  const cache = CacheService.getScriptCache();
-  const props = PropertiesService.getScriptProperties();
+  const docProps = PropertiesService.getDocumentProperties();
 
-  const cacheData = {};
+  const propsToStore = {};
   for (const studentId in studentMap) {
-    cacheData[studentId] = JSON.stringify(studentMap[studentId]);
+    propsToStore[studentId] = JSON.stringify(studentMap[studentId]);
   }
-  cache.putAll(cacheData, 21600); // 6 hours
+  
+  // Store all student attendance rows in document properties
+  docProps.setProperties(propsToStore);
 
-  // Store in PropertiesService (persistent)
-  props.setProperties(studentMap);
+  // Store headers in document properties
+  docProps.setProperty("headers", JSON.stringify(headers));
 
-  cache.put("headers", JSON.stringify(headers))
-  props.setProperty("headers", JSON.stringify(headers))
-
-  Logger.log("Student map cached and stored successfully.");
+  Logger.log("Student map stored in document properties successfully.");
 }
 
-function getStudentAttendance(studentID = "R0379") {
+function getStudentAttendance(studentID = "S0931") {
   console.time("getRowsOptimized");
 
-  const cache = CacheService.getScriptCache();
-  const targetRowsJson = cache.get(studentID);
+  const docProps = PropertiesService.getDocumentProperties();
+  let targetRowsJson = docProps.getProperty(studentID);
 
-  // TODO: If no cache, then run cacheAndStore()
+  // If no data found, populate the document properties
   if (!targetRowsJson) {
-    Logger.log("No cache found for student: " + studentID);
-    return;
+    Logger.log("No data found for student: " + studentID + ". Running storeMapStudentId()...");
+    storeMapStudentId();
+    // Try again after storing
+    targetRowsJson = docProps.getProperty(studentID);
+    if (!targetRowsJson) {
+      Logger.log("Still no data found for student: " + studentID);
+      return null;
+    }
   }
 
-  const targetRows = JSON.parse(targetRowsJson); // array of row numbers
+  // Parse the JSON string to get array of row numbers
+  let targetRows;
+  try {
+    targetRows = JSON.parse(targetRowsJson);
+    if (!Array.isArray(targetRows) || targetRows.length === 0) {
+      Logger.log("Invalid or empty row data for student: " + studentID);
+      return null;
+    }
+  } catch (e) {
+    Logger.log("Error parsing row data for student " + studentID + ": " + e.toString());
+    return null;
+  }
 
-  // Retrieve headers from PropertiesService
-  const props = PropertiesService.getScriptProperties();
-  const headersJson = props.getProperty("headers");
+  // Retrieve headers from Document Properties
+  const headersJson = docProps.getProperty("headers");
   if (!headersJson) {
-    Logger.log("No headers found in properties.");
-    return;
+    Logger.log("No headers found in document properties.");
+    return null;
   }
-  const headers = JSON.parse(headersJson);
+  
+  let headers;
+  try {
+    headers = JSON.parse(headersJson);
+    if (!Array.isArray(headers) || headers.length === 0) {
+      Logger.log("Invalid or empty headers data");
+      return null;
+    }
+  } catch (e) {
+    Logger.log("Error parsing headers: " + e.toString());
+    return null;
+  }
 
-  // Build ranges in the form "Sheet1!2:2", "Sheet1!3:3", etc.
+  // Build ranges in the form "AttdData!2:2", "AttdData!5:5", etc.
   const ranges = targetRows.map(r => `${attendanceSheetName}!${r}:${r}`);
 
   // Batch get only the necessary rows
   const response = Sheets.Spreadsheets.Values.batchGet(attendanceSheetID, { ranges });
+
+  if (!response.valueRanges || response.valueRanges.length === 0) {
+    Logger.log("No data returned from sheet for ranges: " + ranges.join(", "));
+    return null;
+  }
 
   // Map each row to an object with header keys
   const values = response.valueRanges.map(vr => {
@@ -100,7 +130,8 @@ function getStudentAttendance(studentID = "R0379") {
 
   console.timeEnd("getRowsOptimized");
 
-  Logger.log(values)
+  Logger.log("Retrieved " + values.length + " records for student: " + studentID);
+  Logger.log(values);
 
   return values;
 }
@@ -111,7 +142,7 @@ function handleAttendance(e) {
   try {
     // Parse the request body
     const params = JSON.parse(e.postData.contents);
-    const { token, studentid } = params;
+    const { token } = params;
 
     // Validate token
     if (!token) {
@@ -129,8 +160,8 @@ function handleAttendance(e) {
       }));
     }
 
-    // Use studentid from request, or fall back to token's studentId
-    const targetStudentId = studentid || payload.studentId;
+    // Extract studentId from verified token only
+    const targetStudentId = payload.studentId;
 
     // Get attendance data
     const attendanceRecords = getStudentAttendance(targetStudentId);

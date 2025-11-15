@@ -2,7 +2,7 @@ function handleReceipts(e) {
     try {
         // Parse the request body
         const params = JSON.parse(e.postData.contents);
-        const { token, studentid } = params;
+        const { token } = params;
 
         // Validate token
         if (!token) {
@@ -20,8 +20,8 @@ function handleReceipts(e) {
             }));
         }
 
-        // Use studentid from request, or fall back to token's studentId
-        const targetStudentId = studentid || payload.studentId;
+        // Extract studentId from verified token only
+        const targetStudentId = payload.studentId;
 
         // Open the spreadsheet and get the ReceiptData sheet
         var sheet = SpreadsheetApp.getActiveSpreadsheet();

@@ -106,6 +106,8 @@ function doPost(e) {
         return handleAttendance(e);
       case 'receipts':
         return handleReceipts(e);
+      case 'announcements':
+        return handleAnnouncements(e);
       default:
         return sendJsonResponse(JSON.stringify({
           status: "Error",
@@ -120,8 +122,45 @@ function doPost(e) {
   }
 }
 
+// ============================================
+// Announcements Handler
+// ============================================
+
+function handleAnnouncements(e) {
+  try {
+    const announcements = getAnnouncementAndImage();
+    
+    return sendJsonResponse(JSON.stringify({
+      status: "Success",
+      announcements: announcements
+    }));
+  } catch (error) {
+    return sendJsonResponse(JSON.stringify({
+      status: "Error",
+      message: "Failed to fetch announcements: " + error.toString()
+    }));
+  }
+}
+
 function initiateData() {
-  cacheAndStore()
+  storeMapStudentId()
   mapStudentPins()
   getStudentsData()
+}
+
+function getAnnouncementAndImage() {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('control');
+    const lastRow = sheet.getLastRow(); // Get the last row with data
+    const data = sheet.getRange(2, 1, lastRow - 1, 2).getValues(); // Get all rows starting from row 2 in columns A and B
+    console.log(data);
+
+    // Map each row to an object with 'text' and 'image' properties
+    const announcements = data.map(row => ({
+        text: row[0],   // Announcement text from column A
+        image: row[1]   // Image URL from column B
+    }));
+     
+    Logger.log("number of announcements"+ announcements.length)
+    return announcements; // Return an array of announcement objects
+
 }

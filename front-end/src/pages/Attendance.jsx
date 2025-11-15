@@ -13,8 +13,8 @@ export default function Attendance() {
       return;
     }
 
-    console.log('[LOG] Attendance: Fetching data for student', authUser.studentId);
-    fetchAttendance(token, authUser.studentId);
+    console.log('[LOG] Attendance: Fetching data with verified token');
+    fetchAttendance(token);
   }, [authUser, token]);
 
   // Helper function to format column headers
@@ -27,22 +27,35 @@ export default function Attendance() {
     return key.charAt(0).toUpperCase() + key.slice(1);
   };
 
-  // Sort attendance data by date in descending order (most recent first)
-  const sortedAttendanceData = [...attendanceData].sort((a, b) => {
-    // Try to find a date field (common naming conventions)
-    const dateKey = 'date';
+  // Helper function to parse date strings
+  const parseDate = (dateStr) => {
+    if (!dateStr) return null;
     
-    if (!dateKey) return 0;
-
-        // Parse DD/MM/YYYY format to Date objects
-    const parseDate = (dateStr) => {
+    // Try DD/MM/YYYY format
+    if (dateStr.includes('/')) {
       const [day, month, year] = dateStr.split('/');
       return new Date(year, month - 1, day);
-    };
+    }
     
-    const dateA = parseDate(a[dateKey]);
-    const dateB = parseDate(b[dateKey]);
+    // Try ISO format (YYYY-MM-DD)
+    return new Date(dateStr);
+  };
+
+  // Filter data to show only last 3 months
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+  const filteredAttendanceData = attendanceData.filter((record) => {
+    const recordDate = parseDate(record.date);
+    return recordDate && recordDate >= threeMonthsAgo;
+  });
+
+  // Sort attendance data by date in descending order (most recent first)
+  const sortedAttendanceData = [...filteredAttendanceData].sort((a, b) => {
+    const dateA = parseDate(a.date);
+    const dateB = parseDate(b.date);
     
+    if (!dateA || !dateB) return 0;
     return dateB - dateA; // Descending order (most recent first)
   });
 
@@ -60,7 +73,7 @@ export default function Attendance() {
             <p className="text-red-700">{error}</p>
           </div>
         </div>
-      ) : attendanceData.length > 0 ? (
+      ) : sortedAttendanceData.length > 0 ? (
         <div className="w-full max-w-6xl mx-auto flex flex-col gap-4">
           <div className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col h-[70vh]">
             <div className="overflow-auto flex-1">
@@ -90,7 +103,7 @@ export default function Attendance() {
             </div>
           </div>
           <p className="text-sm text-gray-600">
-            Total records: {attendanceData.length}
+            Showing last 3 months ({sortedAttendanceData.length} records)
           </p>
         </div>
       ) : (

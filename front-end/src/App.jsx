@@ -1,5 +1,6 @@
 import Navbar from "./components/Navbar";
 import WhatsAppButton from "./components/WhatsAppButton";
+import Announcement from "./components/Announcement";
 
 import {Navigate, Route,Routes} from "react-router-dom"
 import Login from "./pages/Login";
@@ -9,6 +10,7 @@ import Receipts from "./pages/Receipts";
 import { useAuthStore } from "./store/auth.store.js";
 import {useAttendanceStore} from "./store/attendance.store.js";
 import {useReceiptsStore} from "./store/receipts.store.js";
+import { useAnnouncementStore } from "./store/announcement.store.js";
 import { useEffect } from "react";
 import Loader from './components/FactsLoader';
 
@@ -17,11 +19,22 @@ const App = ()=>{
   const {authUser, isLoading: authLoading, initializeAuth} = useAuthStore()
   const { isLoading: attendanceLoading } = useAttendanceStore()
   const { isLoading: receiptsLoading } = useReceiptsStore()
+  const { fetchAnnouncements, openModal, announcements } = useAnnouncementStore()
 
   useEffect(()=>{
     // Initialize auth from stored token on app load
     initializeAuth()
   }, [])
+
+  // Fetch announcements when user is authenticated
+  useEffect(() => {
+    if (authUser) {
+      fetchAnnouncements().then(() => {
+        // Auto-open announcement modal on first load if there are announcements
+        openModal()
+      })
+    }
+  }, [authUser, fetchAnnouncements, openModal])
 
   console.log('[LOG] authUser:', authUser)
 
@@ -43,6 +56,7 @@ const App = ()=>{
       </Routes>
 
       <WhatsAppButton/>
+      <Announcement/>
       <Toaster/>
 
       </div>
